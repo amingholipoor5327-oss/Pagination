@@ -1,38 +1,66 @@
 import Link from "next/link";
+import "./pageination.css";
 
 export default async function Pagination({ searchParams }) {
+    let params = await searchParams;
+  const page = parseInt(params?.page) || 1;
+  const itemsPerPage = 3;
 
-    let Params = await searchParams;
-     const page = parseInt(Params?.page) || 1;
-    const itemsPerPage = 3;
-    
-     const response = await fetch("http://localhost:3000/api/products", {
-        cache: 'no-store'  
-    });
-    const products = await response.json();
-    
-     const firstIndex = (page - 1) * itemsPerPage;
-    const lastIndex = firstIndex + itemsPerPage;
-    
-     const currentProducts = products.slice(firstIndex, lastIndex);
+  const response = await fetch(
+    "http://localhost:3000/api/products",
+    {
+      cache: "no-store",
+    }
+  );
 
-    return (<div>
-<ul>
+  const products = await response.json();
 
-    {currentProducts.map(
-        (product , index)=>(
-            <li key={index}>
-                {product.name}  
-                {product.price}
-            </li>
-        )
-    )}
-</ul>
+  const allProducts = Math.ceil(
+    products.length / itemsPerPage
+  );
 
-<div>
-<Link href={`?page=${page+1}`}> Next</Link>
+  const firstIndex = (page - 1) * itemsPerPage;
+  const lastIndex = firstIndex + itemsPerPage;
 
-<Link href={`?page=${page-1}`}> Prev</Link>
-</div>
-    </div>)
+  const currentProducts = products.slice(
+    firstIndex,
+    lastIndex
+  );
+
+  return (
+    <div>
+      <ul className="ul">
+        {currentProducts.map((product, index) => (
+        <li key={index} className="li">
+            <span className="productName">{product.name}</span>
+             <span className="productPrice">${product.price}</span>
+        </li>
+        ))}
+      </ul>
+
+      <div className="pagination">
+        {page > 1 && (
+          <Link
+            className="pageBtn"
+            href={`?page=${page - 1}`}
+          >
+            Prev
+          </Link>
+        )}
+
+        <span className="pageNumber">
+           {page} of {allProducts}
+        </span>
+
+        {page < allProducts && (
+          <Link
+            className="pageBtn"
+            href={`?page=${page + 1}`}
+          >
+            Next
+          </Link>
+        )}
+      </div>
+    </div>
+  );
 }
