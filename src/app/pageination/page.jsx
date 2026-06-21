@@ -4,10 +4,10 @@ import "./pageination.css";
 export default async function Pagination({ searchParams }) {
     let params = await searchParams;
   const page = parseInt(params?.page) || 1;
-  const itemsPerPage = 3;
+  const itemsPerPage = 4;
 
   const response = await fetch(
-    "http://localhost:3000/api/products",
+    "https://jsonplaceholder.typicode.com/posts",
     {
       cache: "no-store",
     }
@@ -32,8 +32,8 @@ export default async function Pagination({ searchParams }) {
       <ul className="ul">
         {currentProducts.map((product, index) => (
         <li key={index} className="li">
-            <span className="productName">{product.name}</span>
-             <span className="productPrice">${product.price}</span>
+            <span className="productName">{product.title}</span>
+             <span className="productPrice">${product.body}</span>
         </li>
         ))}
       </ul>
@@ -60,7 +60,9 @@ export default async function Pagination({ searchParams }) {
             Next
           </Link>
         )}
+           
       </div>
-    </div>
+       <Link href="/" className="pageBtn">go home</Link>
+     </div>
   );
 }
